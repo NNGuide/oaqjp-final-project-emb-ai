@@ -14,24 +14,35 @@ def emotion_detector(text_to_analyse):
     # Convert the response text to json format
     formatted_response = json.loads(response.text)
 
+    # Error handling part
+    if response.status_code == 200:
     # Extract the required set of emotions' score
-    anger_score = formatted_response['emotionPredictions'][0]['emotion']['anger']
-    disgust_score = formatted_response['emotionPredictions'][0]['emotion']['disgust']
-    fear_score = formatted_response['emotionPredictions'][0]['emotion']['fear']
-    joy_score = formatted_response['emotionPredictions'][0]['emotion']['joy']
-    sadness_score = formatted_response['emotionPredictions'][0]['emotion']['sadness']
+        anger_score = formatted_response['emotionPredictions'][0]['emotion']['anger']
+        disgust_score = formatted_response['emotionPredictions'][0]['emotion']['disgust']
+        fear_score = formatted_response['emotionPredictions'][0]['emotion']['fear']
+        joy_score = formatted_response['emotionPredictions'][0]['emotion']['joy']
+        sadness_score = formatted_response['emotionPredictions'][0]['emotion']['sadness']
+    
+        # Find the dominant_emotion
+        def find_emotion_key(d, target_value):
+            keys = [key for key, value in d.items() if value == target_value]
+            return keys
 
-    # Find the dominant_emotion
-    def find_emotion_key(d, target_value):
-        keys = [key for key, value in d.items() if value == target_value]
-        return keys
-
-    dominant_score = max(anger_score, disgust_score, fear_score, joy_score, sadness_score)
-    dominant_emotion = find_emotion_key(formatted_response["emotionPredictions"][0]["emotion"], 
+        dominant_score = max(anger_score, disgust_score, fear_score, joy_score, sadness_score)
+        dominant_emotion = find_emotion_key(formatted_response["emotionPredictions"][0]["emotion"], 
                                         dominant_score)
 
-    # Get a string of the dominant emotion from the list result
-    dominant_emotion = dominant_emotion[0]
+        # Get a string of the dominant emotion from the list result
+        dominant_emotion = dominant_emotion[0]
+
+    elif response.status_code == 400:
+        # Set the values to None
+        anger_score = None
+        disgust_score = None
+        fear_score = None
+        joy_score = None
+        sadness_score = None
+        dominant_emotion = None
 
     # return the json format output
     return {'anger': anger_score, 'disgust': disgust_score, 'fear': fear_score, 'joy': joy_score,

@@ -19,6 +19,10 @@ def sent_analyzer():
     sadness_score = response['sadness']
     dominant_emotion = response['dominant_emotion']
 
+    # Error handling part
+    if dominant_emotion == None:
+        return "Invalid text! Please try again!."
+
     # Return a formatted string with the sentiment label and score
     return f"""For the given statement, the system response is 'anger': {anger_score}, 
             'disgust': {disgust_score}, 'fear': {fear_score}, 'joy': {joy_score} and 
